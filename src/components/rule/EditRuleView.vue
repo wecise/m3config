@@ -10,7 +10,6 @@
                         :theme="editor.theme.value"
                         width="100%"
                         :height="editor.height"
-                        style="border:1px solid #f2f2f2;"
                         ref="editorRef"
                     ></Editor>
                 </SplitArea>
@@ -62,7 +61,7 @@ export default {
                     value: "chrome",
                     list: this.m3.EDITOR_THEME
                 },
-                height:'calc(100vh - 225px)'
+                height:'calc(100vh - 158px)'
             },
             ignore: false,
             changed: false,
