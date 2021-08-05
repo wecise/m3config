@@ -6,6 +6,9 @@
     <el-main>
       <MainView :global="global" v-if="global"></MainView>
     </el-main>
+    <el-footer>
+        <Footer :auth="auth" v-if="auth"></Footer>
+    </el-footer>
   </el-container>
 </template>
 
@@ -13,12 +16,14 @@
 
 import MainView from './components/MainView';
 import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 export default {
   name: 'app',
   components: {
     Header,
-    MainView
+    MainView,
+    Footer
   },
   data(){
     return {
