@@ -113,8 +113,8 @@
 
 <script>
 import _ from 'lodash';
-import TreeView from './TreeView';
-import EditRuleView from './EditRuleView';
+// import TreeView from './TreeView';
+// import EditRuleView from './EditRuleView';
 import Welcome from './Welcome';
 
 
@@ -124,8 +124,8 @@ export default {
         model: Object
     },
     components:{
-        TreeView,
-        EditRuleView,
+        TreeView: resolve => {require(['./TreeView.vue'], resolve)},
+        EditRuleView: resolve => {require(['./EditRuleView.vue'], resolve)},
         Welcome
     },
     data() {
