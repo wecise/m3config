@@ -10,9 +10,6 @@ import RuleView from './rule/RuleView';
 
 export default {
   name: 'MainView',
-  props: {
-    global: Object
-  },
   components:{
     RuleView
   }

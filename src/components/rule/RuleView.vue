@@ -15,8 +15,14 @@
                                 </el-button>
                             </el-tooltip> -->
 
+                            <el-tooltip content="插入" >
+                                <el-button type="text" @click="onUpdateConfig" v-if="saveStatus()">
+                                    <svg-icon icon-class="insert" style="width: 1.2em;height: 1.2em;"/>
+                                </el-button>
+                            </el-tooltip>
+
                             <el-tooltip content="保存" >
-                                <el-button type="text" @click="configUpdate" v-if="saveStatus()">
+                                <el-button type="text" @click="onUpdateConfig" v-if="saveStatus()">
                                     <svg-icon icon-class="save" style="width: 1.2em;height: 1.2em;"/>
                                 </el-button>
                             </el-tooltip>
@@ -81,7 +87,11 @@
                                             </el-dropdown-menu>
                                         </el-dropdown>
                                     </span>
-                                    <EditRuleView :model="item.model" :ref="'EditRuleView-'+item.name" @editor:value="onEditorChange"  @editor:change="(v)=>{control.save.show=v;saveStatus();}"></EditRuleView>
+                                    <EditRuleView :model="item.model" 
+                                        :ref="'EditRuleView-'+item.name" 
+                                        @editor:value="onEditorChange"  
+                                        @editor:update="onUpdateConfig"
+                                        @editor:change="(v)=>{control.save.show=v;saveStatus();}"></EditRuleView>
                                 </el-tab-pane>
                             </el-tabs>
                             
@@ -113,7 +123,7 @@
 
 <script>
 import _ from 'lodash';
-// import TreeView from './TreeView';
+import TreeView from './TreeView';
 // import EditRuleView from './EditRuleView';
 import Welcome from './Welcome';
 
@@ -124,7 +134,7 @@ export default {
         model: Object
     },
     components:{
-        TreeView: resolve => {require(['./TreeView.vue'], resolve)},
+        TreeView,
         EditRuleView: resolve => {require(['./EditRuleView.vue'], resolve)},
         Welcome
     },
@@ -416,7 +426,7 @@ export default {
             }); 
 
         },
-        configUpdate(){
+        onUpdateConfig(){
             
             let item = _.find(this.configTabs.tabs,{name:this.configTabs.activeIndex}).model;
 

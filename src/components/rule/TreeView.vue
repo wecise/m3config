@@ -55,34 +55,38 @@
                         <i class="el-icon-folder" style="color:#FFC107;" v-else></i>
                         <span v-if="node.label==='/'"> 我的配置({{data.nodes.length}})</span>
                         <span v-else> {{ pickLabel(node.label) }}({{data.nodes.length}})</span>
-                        <el-dropdown v-show="data.show" style="float:right;width:14px;margin:0 5px;">
-                            <span class="el-dropdown-link">
-                                <i class="el-icon-more el-icon--right"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item @click.native="onRefresh(data)" icon="el-icon-refresh">刷新</el-dropdown-item>
-                                <el-dropdown-item @click.native="onNewFile(data)" icon="el-icon-plus" divided>新建</el-dropdown-item>
-                                <el-dropdown-item @click.native="onNewDir(data)" icon="el-icon-folder-add">新建目录</el-dropdown-item>
-                                <el-dropdown-item @click.native="onEditFile(data)" icon="el-icon-edit-outline" divided>编辑</el-dropdown-item>
-                                <el-dropdown-item @click.native="onExport(data)" icon="el-icon-download" divided>导出</el-dropdown-item>
-                                <el-dropdown-item @click.native="onDelete(data)" icon="el-icon-delete" divided>删除</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                        <div v-show="data.show" style="float:right;width:14px;margin:0 5px;" @click.stop>
+                            <el-dropdown trigger="click">
+                                <span class="el-dropdown-link">
+                                    <i class="el-icon-more el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item @click.native="onRefresh(data)" icon="el-icon-refresh">刷新</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onNewFile(data)" icon="el-icon-plus" divided>新建</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onNewDir(data)" icon="el-icon-folder-add">新建目录</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onEditFile(data)" icon="el-icon-edit-outline" divided>编辑</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onExport(data)" icon="el-icon-download" divided>导出</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onDelete(data)" icon="el-icon-delete" divided>删除</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
                     </span>
                     <span v-else>
                         <i class="el-icon-c-scale-to-original" style="color:#0088cc;"></i>
                         <span draggable="true"  @dragstart="onDragStart(data,$event)" @dragend="onDragEnd($event)"> {{ pickLabel(node.label) }}</span>
-                        <el-dropdown v-show="data.show" style="float:right;width:14px;margin:0 5px;">
-                            <span class="el-dropdown-link">
-                                <i class="el-icon-more el-icon--right"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item @click.native="onEditFile(data)" icon="el-icon-edit-outline">编辑</el-dropdown-item>
-                                <el-dropdown-item @click.native="onNewFile(data)" icon="el-icon-plus" divided>新建</el-dropdown-item>
-                                <el-dropdown-item @click.native="onNewDir(data)" icon="el-icon-folder-add">新建目录</el-dropdown-item>
-                                <el-dropdown-item @click.native="onDelete(data)" icon="el-icon-delete" divided>删除</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                        <div v-show="data.show" style="float:right;width:14px;margin:0 5px;" @click.stop>
+                            <el-dropdown trigger="click">
+                                <span class="el-dropdown-link">
+                                    <i class="el-icon-more el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item @click.native="onEditFile(data)" icon="el-icon-edit-outline">编辑</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onNewFile(data)" icon="el-icon-plus" divided>新建</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onNewDir(data)" icon="el-icon-folder-add">新建目录</el-dropdown-item>
+                                    <el-dropdown-item @click.native="onDelete(data)" icon="el-icon-delete" divided>删除</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
                         <el-tooltip content="编辑" >
                             <el-button v-show="data.show" type="text" @click.stop="onEditFile(data)" icon="el-icon-edit-outline" style="float:right;width:14px;margin:0 5px;"></el-button>
                         </el-tooltip>
@@ -107,6 +111,8 @@
                             </el-form-item>
                             <el-form-item label="名称" prop="name">
                                 <el-input v-model="dialog.configNew.formItem.name" :placeholder="dialog.configNew.formItem.ifDir?'目录名称':'配置名称'" autofocus="true"></el-input>
+                                <span style="font-size: 8px;color: #bbb;" v-if="dialog.configNew.formItem.ifDir">/ 分割符支持创建多级目录，示例：/test100/test200/test300</span>
+                                <span style="font-size: 8px;color: #bbb;" v-else>/ 分割符支持创建多级目录下的配置，示例：/test100/test200/test.json</span>
                             </el-form-item>
                             <el-form-item label="TTL" prop="ttl">
                                 <el-input-number v-model="dialog.configNew.formItem.ttl" placeholder="TTL"></el-input-number>
@@ -240,7 +246,7 @@ export default {
                     showCancelButton: true,
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    type: 'warning'
+                    type: 'error'
             }).then(() => {
 
                 this.m3.ruleDelete(item).then( ()=>{
@@ -329,6 +335,7 @@ export default {
                 this.dialog.configNew.show = false;
                 
                 this.dialog.configNew.loading = false;
+
             }).catch(err=>{
                 this.$message({
                     type: "error",
@@ -353,13 +360,20 @@ export default {
                 type: 'warning'
             }).then(() => {
                 
-                this.m3.ruleExport(key).then(res=>{
-                    this.$message.success("配置导出成功 " + res);
-                }).catch(err=>{
+                this.m3.ruleExport(key).then((res)=>{
+                    let FileSaver = require('file-saver');
+                    let blob = new Blob([JSON.stringify(res,null,2)], { type: "octet/stream" });
+                    
+                    const fileName = `【etcd】${window.location.host}_${window.auth.signedUser.Company.name}${key}_${this.moment().format("YYYY-MM-DD_HH:mm:SS")}.json`;
+                    FileSaver.saveAs(blob, fileName);
+                    this.$message.success("配置导出成功 " + key);
+
+                }).catch((err)=>{
                     this.$message.error("配置导出失败 " + err);
                 });
                 
-            }).catch(() => {
+            }).catch((err) => {
+                console.log(err)
                 this.$message({
                     type: "info",
                     message: "已取消导出操作"

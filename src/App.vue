@@ -1,10 +1,10 @@
 <template>
 
-  <div class="m3 m3config" v-if="auth && auth.signedUser">
+  <div class="m3 m3config" v-if="auth">
     <Header :auth="auth.signedUser" class="header"></Header>
     <div class="main">
       <SideBar class="sidebar" :auth="auth.signedUser" :global="global"></SideBar>
-      <MainView :auth="auth" :global="global" class="content"></MainView>
+      <MainView class="content"></MainView>
     </div>
     <Footer :auth="auth.signedUser" class="footer"></Footer>
   </div>
@@ -32,11 +32,23 @@ export default {
       auth: null
     }
   },
-  mounted(){
-    setTimeout(()=>{
-      this.global = this.m3.global;
-      this.auth = this.m3.auth;
-    },500)
+  created(){
+    let init = ()=>{
+        let timer = setInterval(()=>{
+          try{
+            this.m3.init();
+            window.global = this.global = this.m3.global;
+            this.auth = this.m3.auth;
+            if(this.m3.auth && this.m3.global){
+              clearTimeout(timer);
+            }
+          }catch(err){
+            console.error(err);
+          }
+        },200);
+    };
+    
+    init();
   }
 }
 </script>

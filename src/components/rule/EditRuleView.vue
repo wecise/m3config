@@ -150,6 +150,32 @@ export default {
             editor.on('mousemove', ()=> {
                 editor.resize();
             });
+
+            // Add commands
+            editor.commands.addCommand(
+                {
+                    name: "save",
+                    bindKey: {
+                        mac: "cmd-S", 
+                        win: "ctrl-S",
+                        sender: 'editor|cli'
+                    },
+                    exec: _.debounce(()=> {
+                        this.$emit("editor:update");
+                    },1000)
+                },
+                {
+                    name: "showSettingsMenu",
+                    bindKey: {
+                        win: "Ctrl-p",
+                        mac: "Command-shift-9"
+                    },
+                    exec: (editor)=> {
+                        editor.showSettingsMenu();
+                    },
+                    readOnly: true
+                }
+            );
             
         },
         onEditorInit(){
@@ -157,6 +183,7 @@ export default {
             require(`brace/mode/${this.editor.lang.value}`); //language
             require(`brace/snippets/${this.editor.lang.value}`); //snippet
             require(`brace/theme/${this.editor.theme.value}`); //language
+            require("brace/ext/language_tools");
         },
         onDragEnd(size){
             let elHeight = parseInt(this.$el.offsetHeight * size[1]/100) + 140;
