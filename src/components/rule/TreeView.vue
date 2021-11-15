@@ -197,7 +197,7 @@ export default {
         },
         initData(){
             let root = this.rootPath;
-            this.m3.ruleGet(root).then( (rtn)=>{
+            this.m3.rule.get(root).then( (rtn)=>{
                 this.treeData = [rtn.message];
             });
         },
@@ -219,7 +219,7 @@ export default {
             })
         },                      
         onRefresh(data){
-            this.m3.ruleGet(data.key).then( (rtn)=>{
+            this.m3.rule.get(data.key).then( (rtn)=>{
                 this.$set(data, 'nodes', rtn.message.nodes);
             } );
         },
@@ -249,7 +249,7 @@ export default {
                     type: 'error'
             }).then(() => {
 
-                this.m3.ruleDelete(item).then( ()=>{
+                this.m3.rule.remove(item).then( ()=>{
                     this.$message.success("删除成功");
 
                     // 刷新
@@ -291,7 +291,7 @@ export default {
         },
         onEditFile(data){
 
-            this.m3.ruleGet(data.key).then( (rtn)=>{
+            this.m3.rule.get(data.key).then( (rtn)=>{
                 this.$emit("node-open", rtn.message);
             } );
         },
@@ -321,7 +321,7 @@ export default {
             
             this.dialog.configNew.formItem.key = [this.dialog.configNew.formItem.parent, this.dialog.configNew.formItem.name].join("/").replace(/\/\//g,'/');
             
-            this.m3.ruleAdd(this.dialog.configNew.formItem).then( ()=>{
+            this.m3.rule.add(this.dialog.configNew.formItem).then( ()=>{
                 this.$message({
                     type: "success",
                     message: "保存成功！"
@@ -360,7 +360,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 
-                this.m3.ruleExport(key).then((res)=>{
+                this.m3.rule.export(key).then((res)=>{
                     let FileSaver = require('file-saver');
                     let blob = new Blob([JSON.stringify(res,null,2)], { type: "octet/stream" });
                     
@@ -399,7 +399,7 @@ export default {
                     type: 'warning'
             }).then(() => {
 
-                this.m3.ruleImport(file).then(()=>{
+                this.m3.rule.import(file).then(()=>{
                     this.$message({
                         type: "success",
                         message: "导入成功"

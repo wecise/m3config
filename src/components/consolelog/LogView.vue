@@ -106,7 +106,7 @@ export default {
             },
             theme: {
                 value: "monokai",
-                list: this.m3.EDITOR_THEME
+                list: this.m3.theme.EDITOR_THEME
             }
         },
         dt:{
@@ -187,19 +187,20 @@ export default {
         },
         onLoad(){
             let param = {type:this.logType, name: this.fullname.replace(/\/script/g,""),param:this.consolelog, class: this.ownerClass};
-            this.m3.consolelogTrace(param).then( (rtn)=>{
+            this.m3.consolelog.trace(param).then( (rtn)=>{
+                console.log(rtn)
                 this.dt.rows = rtn.message.logs;
             })
         },
         onDelete(){
             let param = {type:this.logType,name:this.fullname.replace(/\/script/g,"")};
-            this.m3.consolelogDelete(param).then( ()=>{
+            this.m3.consolelog.remove(param).then( ()=>{
                 this.dt.rows = [];
             })
         },
         onTruncate(){
             let param = {type:this.logType};
-            this.m3.consolelogTruncate(param).then( ()=>{
+            this.m3.consolelog.truncate(param).then( ()=>{
                 this.dt.rows = [];
             })
         },
