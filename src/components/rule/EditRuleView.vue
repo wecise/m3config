@@ -184,6 +184,7 @@ export default {
             require(`brace/snippets/${this.editor.lang.value}`); //snippet
             require(`brace/theme/${this.editor.theme.value}`); //language
             require("brace/ext/language_tools");
+            require(`brace/ext/searchbox`);
         },
         onDragEnd(size){
             let elHeight = parseInt(this.$el.offsetHeight * size[1]/100) + 140;

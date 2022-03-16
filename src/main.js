@@ -1,33 +1,64 @@
-const m3 = require("@wecise/m3js");
+// 静态加载依赖组件
 import Vue from 'vue'
-import App from './App.vue'
-import Cookies from 'js-cookie'
-
-
-const themeColor = {dark:'#252D47',light:'#409EFF'};
-const theme = Cookies.get("m3-theme")?themeColor[Cookies.get("m3-theme")]:'#252D47';// dark:#252D47 & blue:#409EFF  default theme is dark
-import(`./assets/theme/element-${theme}/index.css`)
-import moment from 'moment'
-import animate from 'animate.css'
-import VueSplit from 'vue-split-panel'
 import './icons'
+import router from './router'
 
-Vue.use(VueSplit);
+// 开始动态加载依赖组件
+window.state && window.state("正在加载依赖组件...")
 
+// 动态加载模块依赖关系
+// auth,global,Vue... 为 m3 内部加载的模块, 这里的定义只为标明依赖关系时引用, 初始化时会自动替换为m3内部定义
+let mods = {auth:{}, global:{}, Vue:{}}
+// 定义应用所需动态加载模块
+mods.App = {
+    f: () => import(`@/App.vue`),  // 动态加载 App.vue
+    deps: [mods.global, mods.auth, mods.Vue] // App.vue 运行时依赖 global 和 auth
+}
 
-Vue.prototype.moment = moment;
-Vue.prototype.eventHub = new Vue();
+// m3小应用开发框架配置信息
+let m3config = {
+    global: window,   //全局变量，默认为window
+    rootDivID: "app", //配合vue
+    lang: "zh-CN", 
+    theme: "", // 默认使用cookie中保存的信息或使用内置缺省值
+    displayLoadingState: true,
+    mods,
+}
 
-Vue.config.productionTip = false;
+// 加载m3js
+import("@wecise/m3js").then((m3)=>{
 
-window.moment = moment;
-
-m3.init().then(()=>{
-  Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 };
-  new Vue({
-      render: h => h(App)
-  }).$mount('#app')
+    // m3.go(m3config)
+    /*******************************************************************************************
+     **** m3.go 所做的操作如下。如需定制化处理，可以使用下面的代码代替 m3.go(m3config) ****
+     *******************************************************************************************
+     */
+    window.state && window.state("正在初始化小应用配置...")
+    // m3js加载完成，根据配置信息动态有序异步加载依赖组件，完成M3小应用初始化
+    m3.init(m3config).then(()=>{
+        window.state && window.state("正在设置页面...")
+        m3.pageSetting().then(()=>{
+            window.state && window.state("正在渲染页面...")
+            window.moment = require("moment");
+            // 设置基本样式
+            m3.utils.merge(Vue.prototype.$ELEMENT, {
+                size: m3.cookie.get('size') || 'mini',
+            })
+            // m3.render完成的工作是渲染Vue页面，也可以写成
+            new Vue({
+                render: h => h(window.App),
+                router,
+                mounted: function(){
+                    window.state && window.state("页面渲染完成...")
+                    m3.completed() // 加载数据
+                }
+            }).$mount('#app')
+        }).catch((e)=>{
+            console.error(e)
+        })
+    }).catch((e)=>{
+        console.error(e)
+    })
 }).catch((e)=>{
-  console.error(e)
-})
-
+    console.error(e)
+});

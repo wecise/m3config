@@ -72,8 +72,7 @@
                         </div>
                     </span>
                     <span v-else>
-                        <i class="el-icon-c-scale-to-original" style="color:#0088cc;"></i>
-                        <span draggable="true"  @dragstart="onDragStart(data,$event)" @dragend="onDragEnd($event)"> {{ pickLabel(node.label) }}</span>
+                        <el-button type="text" @dblclick.native="onEditFile(data)"><i class="el-icon-c-scale-to-original" style="color:#0088cc;"></i>  {{ pickLabel(node.label) }}</el-button>
                         <div v-show="data.show" style="float:right;width:14px;margin:0 5px;" @click.stop>
                             <el-dropdown trigger="click">
                                 <span class="el-dropdown-link">
@@ -360,20 +359,15 @@ export default {
                 type: 'warning'
             }).then(() => {
                 
-                this.m3.rule.export(key).then((res)=>{
-                    let FileSaver = require('file-saver');
-                    let blob = new Blob([JSON.stringify(res,null,2)], { type: "octet/stream" });
-                    
-                    const fileName = `【etcd】${window.location.host}_${window.auth.signedUser.Company.name}${key}_${this.moment().format("YYYY-MM-DD_HH:mm:SS")}.json`;
-                    FileSaver.saveAs(blob, fileName);
+                let FileSaver = require('file-saver');
+                this.m3.rule.exportRule(key,FileSaver).then((res)=>{
                     this.$message.success("配置导出成功 " + key);
-
                 }).catch((err)=>{
                     this.$message.error("配置导出失败 " + err);
                 });
                 
-            }).catch((err) => {
-                console.log(err)
+            }).catch(err => {
+                console.error(err)
                 this.$message({
                     type: "info",
                     message: "已取消导出操作"
@@ -399,7 +393,7 @@ export default {
                     type: 'warning'
             }).then(() => {
 
-                this.m3.rule.import(file).then(()=>{
+                this.m3.rule.importRule(file).then(()=>{
                     this.$message({
                         type: "success",
                         message: "导入成功"
@@ -447,8 +441,8 @@ export default {
 }
 </script>
 <style scoped>
-    .el-container{
-        
+    .el-button--text {
+        color: #606266;
     }
     .el-header{
         height:40px!important;

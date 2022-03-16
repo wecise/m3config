@@ -188,8 +188,7 @@ export default {
         onLoad(){
             let param = {type:this.logType, name: this.fullname.replace(/\/script/g,""),param:this.consolelog, class: this.ownerClass};
             this.m3.consolelog.trace(param).then( (rtn)=>{
-                console.log(rtn)
-                this.dt.rows = rtn.message.logs;
+                this.dt.rows = rtn.message?rtn.message.logs:[];
             })
         },
         onDelete(){
