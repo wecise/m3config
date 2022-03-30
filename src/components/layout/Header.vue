@@ -13,6 +13,7 @@
             
         </el-col>
         <el-col :span="2">
+            
             <el-menu :default-active="activeIndex" 
                     class="topbar-el-menu" 
                     mode="horizontal" 
@@ -28,19 +29,19 @@
                             <span slot="title">用户</span>
                         </template>
                     </el-menu-item>
-                    <el-menu-item index="/matrix/system" divided v-if="auth.isadmin">
+                    <el-menu-item index="/matrix/system" divided v-if="auth.isAdmin">
                         <i class="el-icon-setting"></i>
                         <template slot="title">
                             <span slot="title">系统管理</span>
                         </template>
                     </el-menu-item>
-                    <el-menu-item index="/matrix/files" v-if="auth.isadmin">
+                    <el-menu-item index="/matrix/files" v-if="auth.isAdmin">
                         <i class="el-icon-folder"></i>
                         <template slot="title">
                             <span slot="title">我的文件</span>
                         </template>
                     </el-menu-item>
-                    <el-menu-item index="home" v-if="auth.isadmin">
+                    <el-menu-item index="home" v-if="auth.isAdmin">
                         <i class="el-icon-s-home"></i>
                         <template slot="title">
                             <span slot="title">默认首页</span>

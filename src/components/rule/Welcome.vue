@@ -41,7 +41,7 @@
             </p>
             <p>
                 如有任何意见或建议，请及时反馈给我们。 
-                Email：m3@wecise.com
+                Email：{{email}}
             </p>
         </el-main>
     </el-container>
@@ -50,7 +50,17 @@
 <script>
 
 export default {
-    name: "Welcome"    
+    name: "Welcome",
+    computed:{
+        email(){
+            try{
+                return this.m3.auth.signedUser.email[0];
+            }catch(err){
+                console.error(err);
+                return "m3@wecise.com";
+            }
+        }
+    }
 }
 </script>
 

@@ -291,8 +291,16 @@ export default {
         onEditFile(data){
 
             this.m3.rule.get(data.key).then( (rtn)=>{
-                this.$emit("node-open", rtn.message);
-            } );
+                let node = rtn.message;
+                if(rtn.status==='error'){
+                    node = _.extend(data, { value: ''} );
+                } else {
+                    this.$emit("node-open", node);
+                }
+                this.$emit("node-open", node);
+            }).catch(err=>{
+                console.error(err);
+            });
         },
         onResetConfig(){
             
@@ -321,6 +329,10 @@ export default {
             this.dialog.configNew.formItem.key = [this.dialog.configNew.formItem.parent, this.dialog.configNew.formItem.name].join("/").replace(/\/\//g,'/');
             
             this.m3.rule.add(this.dialog.configNew.formItem).then( ()=>{
+                
+                // 新建即打开
+                this.onEditFile(JSON.parse(JSON.stringify(this.dialog.configNew.formItem)));
+                
                 this.$message({
                     type: "success",
                     message: "保存成功！"
