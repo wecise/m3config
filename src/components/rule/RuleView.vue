@@ -1,5 +1,5 @@
 <template>
-    <el-container style="background:#f2f2f2;">
+    <el-container style="background:#f2f2f2;" perms="add,delete,edit,list">
         <el-main style="padding:1px;border-bottom:1px solid #f2f2f2;">
             <Split direction="horizontal" :gutterSize="5">
                 <SplitArea :size="control.configTree.show?25:0" :minSize="0" style="overflow:hidden;">
